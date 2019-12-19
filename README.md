@@ -1,11 +1,11 @@
 Classes
 
     FileHandler
-        Method, set default filepath
+        Constructor, set default filepath
         Write to file
         Read file
-        LogicHandler
-    Reverse word
+    LogicHandler
+        Reverse word
         Count Score
         Form file data
         Instantiate Word class
