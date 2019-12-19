@@ -23,19 +23,23 @@ class GameHandler{
 
     private String username;
     public String getUsername(){ return this.username; }
+    private Integer score;
+    public Integer getScore(){return this.score; }
 
     private BufferedReader reader;
     private LogicHandler lHandler;
+    private DataHandler dHandler;
 
     private ArrayList<Word> allWords = new ArrayList<>();
+    public ArrayList<Word> getWords(){ return this.allWords; }
 
     public GameHandler() throws IOException {
         reader = new BufferedReader( new InputStreamReader(System.in) );
         lHandler = new LogicHandler();
+        dHandler = new DataHandler(this);
 
-        String username = readLine("Username: ");
+        this.username = readLine("Username: ");
 
-        this.username = username;
         System.out.println("Welcome, "+username);
         String startMessage = ProjectStrings.startMessage;
         if(startMessage!=null) {
@@ -49,12 +53,17 @@ class GameHandler{
 
             System.out.println( word.toString() );
 
-            allWords.add(word);
+            Boolean isValid = lHandler.isStringValid(allWords, word);
+
+            if(isValid){
+                allWords.add(word);
+                dHandler.saveData();
+            }else{
+                System.out.println( ProjectStrings.invalidWordMessage );
+            }
         }
     }
-    private String readLine() throws IOException {
-        return reader.readLine();
-    }
+    private String readLine() throws IOException { return reader.readLine(); }
     private String readLine(String message) throws IOException {
         System.out.println(message);
         return reader.readLine();
@@ -64,9 +73,28 @@ class GameHandler{
 class DataHandler{
     //Gives user score, record word, ?other features
     private String username;
-    //Local class
+    private ArrayList<Word> lastSaveWords;
+    private GameHandler gHandler;
+    public DataHandler(GameHandler gHandler){
+        //Get gHandler username, dump correct answers to file
+        this.username = gHandler.getUsername();
+        this.gHandler = gHandler;
+    }
+    public void saveData(){
+        ArrayList<Word> correctWords = getCorrectWords();
+        Integer totalScore = 0;
+        for (Word word : correctWords) {
+            totalScore+=word.getScore();
+        }
+        GameData gData = new GameData(username, totalScore );
+        
+    }
+    public ArrayList<Word> getCorrectWords(){ return new SortedWords( gHandler.getWords() ).getCorrect(); }
+    //Local classes
     private class SortedWords{
         private ArrayList<Word> correct=new ArrayList<>(), wrong=new ArrayList<>();
+        public ArrayList<Word> getCorrect(){return this.correct;} public ArrayList<Word> getWrong(){return this.wrong;}
+        
         public SortedWords(ArrayList<Word> words){
                 for (Word w : words) {
                     String wText=w.getWord();String wRev=w.getReverse();Integer wScore=w.getScore();Boolean wCorrect=w.isCorrect(); //Destructuring
@@ -78,27 +106,28 @@ class DataHandler{
                 }
             }
 
-        @Override
-        public String toString() {
-            String ret="Correct:\n";
-
-            for(Word word : correct)
-                ret+=word.toString()+"\n";
-            ret+="Wrong:\n";
-            for(Word word : correct)
-                ret+=word.toString()+"\n";
-
-            return ret;
+            @Override
+            public String toString() {
+                String ret="Correct:\n";
+                for(Word word : correct)
+                    ret+=word.toString()+"\n";
+                ret+="Wrong:\n";
+                for(Word word : wrong)
+                    ret+=word.toString()+"\n";
+                return ret;
         }
-
-        public ArrayList<Word> getCorrect(){return this.correct;}
-        public ArrayList<Word> getWrong(){return this.wrong;}
     }//SortedWords END
-    private class GameData{
-        //Sent straight to FileHandler/DB
-        String username;
-        Integer score;
 
+    private class GameData implements Serializable{
+        //Sent straight to FileHandler/DB
+        private String username;
+        private Integer score;
+        public GameData(String username, Integer score){
+            this.username=username; 
+            this.score=score;
+        }
+        @Override
+        public String toString(){ return this.username+""+this.score; }
         /* TODO: Finish DB Functions
         public Boolean sendToDB(Connection conn, String tableName, GameData curUser, ArrayList<GameData> boardUsers ){
         //Call to Merge Sort Ascending function
@@ -117,13 +146,26 @@ class DataHandler{
         public Boolean
          */
     }
-    public DataHandler(GameHandler gHandler){
-        //Get gHandler username, dump correct answers to file
-        username = gHandler.getUsername();
-    }
 }
 
 class LogicHandler{
+    public Boolean isStringValid(ArrayList<Word> words, Word checkWord){ //TODO: Implement check for spaces, length, etc.
+        Boolean ret = true;
+        String checkString = checkWord.getWord();
+
+        for (Word word : words) {
+            if( word.getWord().equals(checkString) ){
+                ret = false;
+            }
+        }
+        return ret;
+    }
+    public Word processWord(String word){
+        String reverse = reverseWord(word);
+        Integer score = getWordScore(word, reverse);
+        
+        return new Word(word,reverse,score);
+    }
     private String reverseWord(String word){
         StringBuilder sBuilder = new StringBuilder().append(word);
         return sBuilder.reverse().toString();
@@ -134,12 +176,6 @@ class LogicHandler{
     private Integer getWordScore(String word, String reverse){
         if(!checkPalindrome (word,reverse) ){ return 0; }
         else{ return word.length(); }
-    }
-    public Word processWord(String word){
-        String reverse = reverseWord(word);
-        Integer score = getWordScore(word, reverse);
-
-        return new Word(word,reverse,score);
     }
 }
 
@@ -173,4 +209,5 @@ interface UsedWord{
 }
 class ProjectStrings{
     public static final String startMessage = null;
+    public static final String invalidWordMessage = "You already used this word";
 }
