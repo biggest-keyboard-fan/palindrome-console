@@ -21,8 +21,8 @@ public class MainPalindrome{
 }
 
 class GameHandler{
-    private String username;
 
+    private String username;
     public String getUsername(){ return this.username; }
 
     private BufferedReader reader;
@@ -31,18 +31,17 @@ class GameHandler{
     private ArrayList<Word> allWords = new ArrayList<>();
 
     public GameHandler() throws IOException {
-    reader = new BufferedReader( new InputStreamReader(System.in) );
-    lHandler = new LogicHandler();
+        reader = new BufferedReader( new InputStreamReader(System.in) );
+        lHandler = new LogicHandler();
 
-    String username = readLine("Username: ");
+        String username = readLine("Username: ");
 
-    this.username = username;
-    System.out.println("Welcome, "+username);
-    String startMessage = ProjectStrings.startMessage;
-    if(startMessage!=null) {
-        System.out.println(startMessage);
-    }
-
+        this.username = username;
+        System.out.println("Welcome, "+username);
+        String startMessage = ProjectStrings.startMessage;
+        if(startMessage!=null) {
+            System.out.println(startMessage);
+        }
     }
     public void startReading() throws IOException{
         while(true){
@@ -64,6 +63,8 @@ class GameHandler{
 }
 
 class DataHandler{
+    //Gives user score, record word, ?other features
+    private String username;
     //Local class
     private class SortedWords{
         private ArrayList<Word> correct=new ArrayList<>(), wrong=new ArrayList<>();
@@ -77,11 +78,39 @@ class DataHandler{
                     }
                 }
             }
+
+        @Override
+        public String toString() { return new Gson().toJson(this); }
+
         public ArrayList<Word> getCorrect(){return this.correct;}
         public ArrayList<Word> getWrong(){return this.wrong;}
     }//SortedWords END
+    private class GameData{
+        //Sent straight to FileHandler/DB
+        String username;
+        Integer score;
+
+        /* TODO: Finish DB Functions
+        public Boolean sendToDB(Connection conn, String tableName, GameData curUser, ArrayList<GameData> boardUsers ){
+        //Call to Merge Sort Ascending function
+        //Foreach Merge Sort Ascending upload to db
+            try {
+                Statement stmt = conn.createStatement();
+                String query = String.format( "INSERT INTO %s (username, score) values(%s,%s)", tableName , gameData.username , gameData.score );
+                ResultSet rs = stmt.executeQuery();
+            }
+            catch (SQLException e ) {
+                return false;
+            }
+        }
+        //DB FUNCTIONALITY (SORT): Load current leaders, form array, sort by descending, upload to DB
+        //DB FEATURES: Prevent username SQL injection
+        public Boolean
+         */
+    }
     public DataHandler(GameHandler gHandler){
         //Get gHandler username, dump correct answers to file
+        username = gHandler.getUsername();
     }
 }
 
@@ -115,10 +144,8 @@ class Word implements UsedWord{
         this.score=score;
   }
   @Override
-  public String toString(){
-        Gson g = new Gson();
-        return g.toJson(this );
-  }
+  public String toString(){ return new Gson().toJson(this ); }
+
     //Getters
 
     public String getWord(){return this.word;}
