@@ -4,6 +4,7 @@ import java.util.*;
 import com.google.gson.Gson;
 /*
 TODO:
+ - Better interface implementation
  - Format out capital letters, spaces
  - Ban String.length()<2
  - Look for other ways of cheating 

@@ -18,12 +18,8 @@ Classes
 
 Interfaces
 
-    UsedWord 
+    UsedWord
         String word
         String reverse
         Int Score
         ? String difference (word: hello reverse: olleh difference: XXlXX)
-
-TODO:
- [] Implement more interfaces (not just one)
- [] 
