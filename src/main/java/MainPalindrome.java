@@ -24,14 +24,13 @@ public class MainPalindrome{
 
 class GameHandler{
   private String username;
-  private enum userActions{quit, readWord};
 
   public String getUsername(){ return this.username; }
 
   private BufferedReader reader;
   private LogicHandler lHandler;
 
-  private ArrayList<Word> allWords = new ArrayList<Word>();  
+  private ArrayList<Word> allWords = new ArrayList<Word>();
 
   public GameHandler() throws IOException {
 	reader = new BufferedReader( new InputStreamReader(System.in) );
@@ -49,7 +48,6 @@ class GameHandler{
   public void startReading() throws IOException{
 	while(true){
 	  String line = readLine("Waiting for input: ");
-	  userActions action = interpretLine(line);
 	  
 	  //FIXME: Put this in switch readWord section
 	  
@@ -59,22 +57,7 @@ class GameHandler{
 	  
 	  //FIXME: End
 
-	  /* FIXME: Switch
-	    switch(action){
-		case (quit) :
-		  //Do quit logic
-
-		break;
-		case (readWord):
-		  //Do read logic
-
-		break;	  
-	  }*/
 	}
-  }
-  private userActions interpretLine(String line){ //TODO: Compare to ProjectStrings
-	//if(line.equals(ProjectStrings.userActions_quit) ) return userActions.quit;
-	return userActions.readWord;
   }
   private String readLine() throws IOException {
 	return reader.readLine();
