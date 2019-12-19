@@ -12,14 +12,12 @@ TODO:
 */
 
 public class MainPalindrome{
-  public static BufferedReader reader;
   public static void main(String[] args) throws IOException {
 	
 	GameHandler gHandler = new GameHandler();
 	gHandler.startReading();
 
   }
-
 }
 
 class GameHandler{
@@ -30,7 +28,7 @@ class GameHandler{
   private BufferedReader reader;
   private LogicHandler lHandler;
 
-  private ArrayList<Word> allWords = new ArrayList<Word>();
+  private ArrayList<Word> allWords = new ArrayList<>();
 
   public GameHandler() throws IOException {
 	reader = new BufferedReader( new InputStreamReader(System.in) );
@@ -42,20 +40,16 @@ class GameHandler{
 	System.out.println("Welcome, "+username);
 	String startMessage = ProjectStrings.startMessage;
 	if(startMessage!=null)
-	  System.out.println(startMessage);
-	
+	    System.out.println(startMessage);
+
   }
   public void startReading() throws IOException{
 	while(true){
 	  String line = readLine("Waiting for input: ");
-	  
-	  //FIXME: Put this in switch readWord section
-	  
+
 	  Word word = lHandler.processWord(line);
-	  System.out.println(word.toString() );
+	  System.out.println( word.toString() );
 	  allWords.add(word);
-	  
-	  //FIXME: End
 
 	}
   }
@@ -100,8 +94,7 @@ class Word implements UsedWord{
   @Override //TODO: Add proper JSON
   public String toString(){
       Gson g = new Gson();
-      String ret= g.toJson(this );
-      return ret;
+      return g.toJson(this );
   }
   //Getters
   public String getWord(){return this.word;}
