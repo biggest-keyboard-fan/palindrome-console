@@ -45,14 +45,14 @@ class GameHandler{
 
     }
     public void startReading() throws IOException{
-    while(true){
-        String line = readLine("Waiting for input: ");
+        while(true){
+            String line = readLine("Waiting for input: ");
+            Word word = lHandler.processWord(line);
 
-        Word word = lHandler.processWord(line);
-        System.out.println( word.toString() );
-        allWords.add(word);
+            System.out.println( word.toString() );
 
-    }
+            allWords.add(word);
+        }
     }
     private String readLine() throws IOException {
         return reader.readLine();
@@ -62,6 +62,29 @@ class GameHandler{
         return reader.readLine();
     }
 }
+
+class DataHandler{
+    //Local class
+    private class SortedWords{
+        private ArrayList<Word> correct=new ArrayList<>(), wrong=new ArrayList<>();
+        public SortedWords(ArrayList<Word> words){
+                for (Word w : words) {
+                    String wText=w.getWord();String wRev=w.getReverse();Integer wScore=w.getScore();Boolean wCorrect=w.isCorrect(); //Destructuring
+                    if(wCorrect){
+                        correct.add(w);
+                    }else {
+                        wrong.add(w);
+                    }
+                }
+            }
+        public ArrayList<Word> getCorrect(){return this.correct;}
+        public ArrayList<Word> getWrong(){return this.wrong;}
+    }//SortedWords END
+    public DataHandler(GameHandler gHandler){
+        //Get gHandler username, dump correct answers to file
+    }
+}
+
 class LogicHandler{
     private String reverseWord(String word){
         StringBuilder sBuilder = new StringBuilder().append(word);
