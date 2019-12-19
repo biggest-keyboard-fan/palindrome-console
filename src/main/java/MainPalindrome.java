@@ -1,7 +1,6 @@
 import java.lang.*;
 import java.io.*;
 import java.util.*;
-import com.google.gson.Gson;
 /*
 TODO:
  - Better interface implementation
@@ -80,7 +79,17 @@ class DataHandler{
             }
 
         @Override
-        public String toString() { return new Gson().toJson(this); }
+        public String toString() {
+            String ret="Correct:\n";
+
+            for(Word word : correct)
+                ret+=word.toString()+"\n";
+            ret+="Wrong:\n";
+            for(Word word : correct)
+                ret+=word.toString()+"\n";
+
+            return ret;
+        }
 
         public ArrayList<Word> getCorrect(){return this.correct;}
         public ArrayList<Word> getWrong(){return this.wrong;}
@@ -144,7 +153,7 @@ class Word implements UsedWord{
         this.score=score;
   }
   @Override
-  public String toString(){ return new Gson().toJson(this ); }
+  public String toString(){ return String.format("Word: %s Reverse: %s Score: %d",word,reverse,score); }
 
     //Getters
 
