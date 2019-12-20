@@ -1,5 +1,8 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.lang.*;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 /*
 TODO:
@@ -80,6 +83,9 @@ class DataHandler implements Serializable {
         this.fHandler = new FileHandler(ProjectStrings.filename);
         this.username = gHandler.getUsername();
         this.gHandler = gHandler;
+
+
+
     }
     public void saveData() throws IOException, ClassNotFoundException {
         ArrayList<Word> words = gHandler.getWords();
@@ -88,41 +94,60 @@ class DataHandler implements Serializable {
             totalScore += word.getScore();
         }
         GameData gData = new GameData(this.username, totalScore);
-        System.out.println("Score: " + gData.toString());
-        fHandler.SaveToFile(gData);
-        GameData gDataRet = fHandler.ReadFromFile();
-        System.out.println( gDataRet.toString() );
-    }
 
+        ArrayList<GameData> gDataRet = fHandler.ReadFromFile();
+        System.out.println("gData: "+gData);
+        System.out.println("gDataRet: "+gDataRet);
+        ArrayList<GameData> gDataSort = sortAscending( gDataRet, gData );
+
+
+        System.out.println("gDataSort: "+gDataSort);
+
+        fHandler.SaveToFile(gDataSort);
+    }
+    public ArrayList<GameData> sortAscending(ArrayList<GameData> lData, GameData data){
+        boolean newUser = true;
+
+        for (GameData feachData: lData) {
+            if( feachData.getUsername().equals( data.getUsername() ) ){
+                newUser=false;
+
+                if( data.getScore() > feachData.getScore() )
+                    feachData.setScore( data.getScore() );
+            }
+
+        }
+        if(newUser)
+            lData.add(data);
+
+        Collections.sort(lData, new Comparator<GameData>() {
+            public int compare(GameData o1, GameData o2) {
+                return o1.getScore().compareTo( o2.getScore() );
+            }
+        });
+
+        Integer lSize = lData.size();
+        if(lSize>5)
+            lData.subList(0,lSize-5).clear();
+
+        return lData;
+    }
 }
 
 class GameData implements Serializable{
     //Sent straight to FileHandler/DB
     private String username;
     private Integer score;
+    public Integer getScore(){return this.score;}
+    public void setScore(Integer score){this.score=score;}
+    public  String getUsername(){return this.username;}
     public GameData(String username, Integer score){
         this.username=username;
         this.score=score;
     }
     @Override
     public String toString(){ return this.username+" : "+this.score; }
-        /* TODO: Finish DB Functions
-        public Boolean sendToDB(Connection conn, String tableName, GameData curUser, ArrayList<GameData> boardUsers ){
-        //Call to Merge Sort Ascending function
-        //Foreach Merge Sort Ascending upload to db
-            try {
-                Statement stmt = conn.createStatement();
-                String query = String.format( "INSERT INTO %s (username, score) values(%s,%s)", tableName , gameData.username , gameData.score );
-                ResultSet rs = stmt.executeQuery();
-            }
-            catch (SQLException e ) {
-                return false;
-            }
-        }
-        //DB FUNCTIONALITY (SORT): Load current leaders, form array, sort by descending, upload to DB
-        //DB FEATURES: Prevent username SQL injection
-        public Boolean
-         */
+
 }
 
 class LogicHandler{
@@ -187,19 +212,26 @@ interface UsedWord{
     Boolean isCorrect();
 }
 
-class FileHandler implements Serializable {
-
+class FileHandler {
     String fileName;
     public FileHandler(String fileName) throws IOException {
         this.fileName=fileName;
     }
-    public void SaveToFile(GameData obj) throws IOException {
+    public void SaveToFile(ArrayList<GameData> obj) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName) );
         out.writeObject(obj);
     }
-    public GameData ReadFromFile() throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName) );
-        return (GameData) in.readObject();
+    public ArrayList<GameData> ReadFromFile() throws IOException, ClassNotFoundException {
+        ObjectInputStream in=null;
+        try{
+            in = new ObjectInputStream(new FileInputStream(fileName) );
+        }
+        catch(FileNotFoundException e){
+            ArrayList<GameData> empty = new ArrayList<GameData>();
+            SaveToFile( empty );
+            return empty;
+        }
+        return (ArrayList<GameData>) in.readObject();
     }
 }
 
@@ -209,3 +241,18 @@ class ProjectStrings{
     invalidWordMessage = "You already used this word",
     filename = "Externals.out";
 }
+
+/* Sort debug
+	ArrayList<GameData> al = new ArrayList<GameData>();
+        al.add(new GameData("user1",8) );
+        al.add(new GameData("user2",7) );
+        al.add(new GameData("user3",6) );
+        al.add(new GameData("user4",2) );
+        al.add(new GameData("user5",1) );
+        al.add(new GameData("user6",0) );
+
+        System.out.println(al );
+        ArrayList<GameData> sorted = sortAscending(al,new GameData("newUser",4) );
+        System.out.println(sorted );
+        
+        */
