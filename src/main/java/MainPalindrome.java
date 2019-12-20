@@ -6,11 +6,9 @@ import java.lang.reflect.Array;
 import java.util.*;
 /*
 TODO:
- - Better interface implementation
  - Format out capital letters, spaces
  - Ban String.length()<2
  - Look for other ways of cheating 
- - ? Separate GameData class / process data in GameHandler
 */
 
 public class MainPalindrome{
