@@ -10,5 +10,8 @@
         <module name="palindrome-console" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="palindrome-console-maven (1)" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
