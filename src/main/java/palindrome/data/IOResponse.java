@@ -1,7 +1,5 @@
 package palindrome.data;
 
-import java.util.ArrayList;
-
 public class IOResponse {
     public IOResponse(responseType response, IOData responseData) {
         this.response = response;

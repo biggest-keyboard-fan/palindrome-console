@@ -1,11 +1,8 @@
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
 import palindrome.data.*;
 import palindrome.handlers.*;
 
 import java.lang.*;
 import java.io.*;
-import java.util.ArrayList;
 /*
 TODO:
  - Format out capital letters, spaces
@@ -18,7 +15,6 @@ TODO:
 */
 
 public class MainPalindrome{
-@Test
   public static void main(String[] args) throws IOException, ClassNotFoundException {
 
     GameHandler gHandler = new GameHandler(); // - game mode
