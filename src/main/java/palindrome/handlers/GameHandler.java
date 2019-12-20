@@ -50,16 +50,16 @@ public class GameHandler{
     }
     public IOResponse processLine(String line) throws IOException, ClassNotFoundException{
         Word word = LogicHandler.processWord(line);
-        if(word==null){ /*System.out.println( ProjectStrings.notPalindromeMessage );*/ return new IOResponse(IOResponse.responseType.notPalindrome, null); }
+        if(word==null){ System.out.println( ProjectStrings.notPalindromeMessage ); return new IOResponse(IOResponse.responseType.notPalindrome, null); }
 
         Boolean isValid = LogicHandler.isStringValid(allWords, word);
 
         if(isValid){
             allWords.add(word);
-            //System.out.println( word.toString() );
+            System.out.println( word.toString() );
             return new IOResponse( IOResponse.responseType.correct, dHandler.saveData() );
         }else{
-            //System.out.println( ProjectStrings.invalidWordMessage );
+            System.out.println( ProjectStrings.invalidWordMessage );
             return new IOResponse(IOResponse.responseType.used,null);
         }
     }
