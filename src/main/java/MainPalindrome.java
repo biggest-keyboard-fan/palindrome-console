@@ -11,7 +11,7 @@ TODO:
 */
 
 public class MainPalindrome{
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, ClassNotFoundException {
 	
 	GameHandler gHandler = new GameHandler();
 	gHandler.startReading();
@@ -36,9 +36,9 @@ class GameHandler{
     public GameHandler() throws IOException {
         reader = new BufferedReader( new InputStreamReader(System.in) );
         lHandler = new LogicHandler();
-        dHandler = new DataHandler(this);
 
         this.username = readLine("Username: ");
+        dHandler = new DataHandler(this);
 
         System.out.println("Welcome, "+username);
         String startMessage = ProjectStrings.startMessage;
@@ -46,17 +46,17 @@ class GameHandler{
             System.out.println(startMessage);
         }
     }
-    public void startReading() throws IOException{
+    public void startReading() throws IOException, ClassNotFoundException {
         while(true){
-            String line = readLine("Waiting for input: ");
+            String line = readLine();
             Word word = lHandler.processWord(line);
-
-            System.out.println( word.toString() );
+            if(word==null){ System.out.println( ProjectStrings.notPalindromeMessage ); continue; }
 
             Boolean isValid = lHandler.isStringValid(allWords, word);
 
             if(isValid){
                 allWords.add(word);
+                System.out.println( word.toString() );
                 dHandler.saveData();
             }else{
                 System.out.println( ProjectStrings.invalidWordMessage );
@@ -70,64 +70,42 @@ class GameHandler{
     }
 }
 
-class DataHandler{
+class DataHandler implements Serializable {
     //Gives user score, record word, ?other features
     private String username;
-    private ArrayList<Word> lastSaveWords;
     private GameHandler gHandler;
-    public DataHandler(GameHandler gHandler){
+    private FileHandler fHandler;
+    public DataHandler(GameHandler gHandler) throws IOException {
         //Get gHandler username, dump correct answers to file
+        this.fHandler = new FileHandler(ProjectStrings.filename);
         this.username = gHandler.getUsername();
         this.gHandler = gHandler;
     }
-    public void saveData(){
-        ArrayList<Word> correctWords = getCorrectWords();
+    public void saveData() throws IOException, ClassNotFoundException {
+        ArrayList<Word> words = gHandler.getWords();
         Integer totalScore = 0;
-        for (Word word : correctWords) {
-            totalScore+=word.getScore();
+        for (Word word : words) {
+            totalScore += word.getScore();
         }
-        GameData gData = new GameData(username, totalScore );
-        
+        GameData gData = new GameData(this.username, totalScore);
+        System.out.println("Score: " + gData.toString());
+        fHandler.SaveToFile(gData);
+        GameData gDataRet = fHandler.ReadFromFile();
+        System.out.println( gDataRet.toString() );
     }
-    public ArrayList<Word> getCorrectWords(){ return new SortedWords( gHandler.getWords() ).getCorrect(); }
-    //Local classes
-    private class SortedWords{
-        private ArrayList<Word> correct=new ArrayList<>(), wrong=new ArrayList<>();
-        public ArrayList<Word> getCorrect(){return this.correct;} public ArrayList<Word> getWrong(){return this.wrong;}
-        
-        public SortedWords(ArrayList<Word> words){
-                for (Word w : words) {
-                    String wText=w.getWord();String wRev=w.getReverse();Integer wScore=w.getScore();Boolean wCorrect=w.isCorrect(); //Destructuring
-                    if(wCorrect){
-                        correct.add(w);
-                    }else {
-                        wrong.add(w);
-                    }
-                }
-            }
 
-            @Override
-            public String toString() {
-                String ret="Correct:\n";
-                for(Word word : correct)
-                    ret+=word.toString()+"\n";
-                ret+="Wrong:\n";
-                for(Word word : wrong)
-                    ret+=word.toString()+"\n";
-                return ret;
-        }
-    }//SortedWords END
+}
 
-    private class GameData implements Serializable{
-        //Sent straight to FileHandler/DB
-        private String username;
-        private Integer score;
-        public GameData(String username, Integer score){
-            this.username=username; 
-            this.score=score;
-        }
-        @Override
-        public String toString(){ return this.username+""+this.score; }
+class GameData implements Serializable{
+    //Sent straight to FileHandler/DB
+    private String username;
+    private Integer score;
+    public GameData(String username, Integer score){
+        this.username=username;
+        this.score=score;
+    }
+    @Override
+    public String toString(){ return this.username+" : "+this.score; }
         /* TODO: Finish DB Functions
         public Boolean sendToDB(Connection conn, String tableName, GameData curUser, ArrayList<GameData> boardUsers ){
         //Call to Merge Sort Ascending function
@@ -145,7 +123,6 @@ class DataHandler{
         //DB FEATURES: Prevent username SQL injection
         public Boolean
          */
-    }
 }
 
 class LogicHandler{
@@ -164,6 +141,8 @@ class LogicHandler{
         String reverse = reverseWord(word);
         Integer score = getWordScore(word, reverse);
         
+        if(score==0){ return null; }
+
         return new Word(word,reverse,score);
     }
     private String reverseWord(String word){
@@ -207,7 +186,26 @@ interface UsedWord{
     Integer getScore();
     Boolean isCorrect();
 }
+
+class FileHandler implements Serializable {
+
+    String fileName;
+    public FileHandler(String fileName) throws IOException {
+        this.fileName=fileName;
+    }
+    public void SaveToFile(GameData obj) throws IOException {
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName) );
+        out.writeObject(obj);
+    }
+    public GameData ReadFromFile() throws IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName) );
+        return (GameData) in.readObject();
+    }
+}
+
 class ProjectStrings{
-    public static final String startMessage = null;
-    public static final String invalidWordMessage = "You already used this word";
+    public static final String startMessage = null, 
+    notPalindromeMessage = "Not a palindrome", 
+    invalidWordMessage = "You already used this word",
+    filename = "Externals.out";
 }
