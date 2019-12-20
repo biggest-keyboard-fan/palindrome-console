@@ -8,7 +8,10 @@ import java.util.*;
 TODO:
  - Format out capital letters, spaces
  - Ban String.length()<2
- - Look for other ways of cheating 
+ - Look for other ways of cheating
+ - Simpler IO Class for debugging
+ - Reformat classes
+ - Implement JUnit
 */
 
 public class MainPalindrome{
@@ -81,9 +84,6 @@ class DataHandler implements Serializable {
         this.fHandler = new FileHandler(ProjectStrings.filename);
         this.username = gHandler.getUsername();
         this.gHandler = gHandler;
-
-
-
     }
     public void saveData() throws IOException, ClassNotFoundException {
         ArrayList<Word> words = gHandler.getWords();
