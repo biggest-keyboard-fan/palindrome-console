@@ -3,6 +3,7 @@ import palindrome.handlers.*;
 
 import java.lang.*;
 import java.io.*;
+import java.util.ArrayList;
 /*
 TODO:
  - Format out capital letters, spaces
@@ -15,10 +16,22 @@ TODO:
 
 public class MainPalindrome{
   public static void main(String[] args) throws IOException, ClassNotFoundException {
-	
-	GameHandler gHandler = new GameHandler();
-	gHandler.startReading();
+	//new GameHandler(user) - testing mode
+    //new GameHandler() - game mode
+	GameHandler gHandler = new GameHandler("testUser");
+	//gHandler.startReading();
+    ArrayList<IOResponse> tResponses=new ArrayList<>();
 
+    tResponses.add( gHandler.processLine("топот") );
+    tResponses.add( gHandler.processLine("потоп") );
+    tResponses.add( gHandler.processLine("madam") );
+    tResponses.add( gHandler.processLine("radar") );
+    tResponses.add( gHandler.processLine("топот") );
+    tResponses.add( gHandler.processLine("madam") );
+
+    for (IOResponse tResponse: tResponses ) {
+      System.out.println(tResponse);
+    }
   }
 }
 

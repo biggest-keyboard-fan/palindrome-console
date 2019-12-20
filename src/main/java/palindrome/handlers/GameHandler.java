@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class GameHandler{
 
-    private String username;
+    private String username=null;
     public String getUsername(){ return this.username; }
     private Integer score;
     public Integer getScore(){return this.score; }
@@ -34,6 +34,14 @@ public class GameHandler{
             System.out.println(startMessage);
         }
     }
+    public GameHandler(String username) throws IOException{
+        reader = new BufferedReader( new InputStreamReader(System.in) );
+        this.username=username;
+
+        System.out.println("Testing mode. Username: "+username);
+
+        dHandler = new DataHandler(this);
+    }
     public void startReading() throws IOException, ClassNotFoundException {
         while(true){
             String line = readLine();
@@ -42,16 +50,16 @@ public class GameHandler{
     }
     public IOResponse processLine(String line) throws IOException, ClassNotFoundException{
         Word word = LogicHandler.processWord(line);
-        if(word==null){ System.out.println( ProjectStrings.notPalindromeMessage ); return new IOResponse(IOResponse.responseType.notPalindrome, null); }
+        if(word==null){ /*System.out.println( ProjectStrings.notPalindromeMessage );*/ return new IOResponse(IOResponse.responseType.notPalindrome, null); }
 
         Boolean isValid = LogicHandler.isStringValid(allWords, word);
 
         if(isValid){
             allWords.add(word);
-            System.out.println( word.toString() );
+            //System.out.println( word.toString() );
             return new IOResponse( IOResponse.responseType.correct, dHandler.saveData() );
         }else{
-            System.out.println( ProjectStrings.invalidWordMessage );
+            //System.out.println( ProjectStrings.invalidWordMessage );
             return new IOResponse(IOResponse.responseType.used,null);
         }
     }
