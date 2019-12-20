@@ -1,31 +1,21 @@
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import palindrome.data.IOData;
 import palindrome.data.IOResponse;
+import palindrome.data.Word;
 import palindrome.handlers.GameHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainPalindrome_Test1 {
     @Test
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        //new GameHandler(user) - testing mode
-        //new GameHandler() - game mode
-        //gHandler.startReading() - start reading;
-
         GameHandler gHandler = new GameHandler("testUser");
 
-        ArrayList<IOResponse> tResponses=new ArrayList<>();
-
-        tResponses.add( gHandler.processLine("топот") );
-        tResponses.add( gHandler.processLine("потоп") );
-        tResponses.add( gHandler.processLine("madam") );
-        tResponses.add( gHandler.processLine("radar") );
-        tResponses.add( gHandler.processLine("топот") );
-        tResponses.add( gHandler.processLine("madam") );
-
-        for (IOResponse tResponse: tResponses )
-            System.out.println(tResponse);
-        //Assert.assertArrayEquals();
+        Assert.assertSame( IOResponse.responseType.correct , gHandler.processLine("топот").getResponse() );
+        Assert.assertSame( IOResponse.responseType.notPalindrome , gHandler.processLine("12345").getResponse() );
+        Assert.assertSame( IOResponse.responseType.used , gHandler.processLine("топот").getResponse() );
     }
 }

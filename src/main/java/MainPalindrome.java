@@ -12,6 +12,7 @@ TODO:
  - Ban String.length()<2
  - Look for other ways of cheating
  - IO Class for debugging
+ - FileHandler debugging
  - Reformat classes
  - Implement JUnit
 */
