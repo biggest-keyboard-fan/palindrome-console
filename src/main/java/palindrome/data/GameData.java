@@ -13,6 +13,10 @@ public class GameData implements Serializable {
         this.username=username;
         this.score=score;
     }
+    public GameData(GameData gData){
+        this.username=gData.getUsername();
+        this.score=gData.getScore();
+    }
     @Override
     public String toString(){ return this.username+" : "+this.score; }
 

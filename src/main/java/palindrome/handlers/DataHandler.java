@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class DataHandler implements Serializable {
     //Gives user score, record word, ?other features
@@ -20,8 +21,9 @@ public class DataHandler implements Serializable {
         this.username = gHandler.getUsername();
         this.gHandler = gHandler;
     }
-    public void saveData() throws IOException, ClassNotFoundException {
+    public IOData saveData() throws IOException, ClassNotFoundException {
         ArrayList<Word> words = gHandler.getWords();
+        Word lastWord = words.get( words.size()-1 );
         Integer totalScore = 0;
         for (Word word : words) {
             totalScore += word.getScore();
@@ -29,18 +31,25 @@ public class DataHandler implements Serializable {
         GameData gData = new GameData(this.username, totalScore);
 
         ArrayList<GameData> gDataRet = fHandler.ReadFromFile();
-        System.out.println("gData: "+gData);
-        System.out.println("gDataRet: "+gDataRet);
+        ArrayList<GameData> reinstDataRet = getReInstantiatedGameData(gDataRet); //Used for debugging. Contains separate instances
         ArrayList<GameData> gDataSort = sortAscending( gDataRet, gData );
 
-        System.out.println("gDataSort: "+gDataSort);
-
         fHandler.SaveToFile(gDataSort);
+
+        return new IOData(lastWord,gData,reinstDataRet,gDataSort);
+    }
+    private ArrayList<GameData> getReInstantiatedGameData(ArrayList<GameData> gData){
+        ArrayList<GameData> retData=new ArrayList<>();
+        for (GameData data: gData)
+            retData.add( new GameData(data) );
+
+        return retData;
     }
     public ArrayList<GameData> sortAscending(ArrayList<GameData> lData, GameData data){
         boolean newUser = true;
+        ArrayList<GameData> retData = new ArrayList<>(lData);
 
-        for (GameData feachData: lData) {
+        for (GameData feachData: retData) {
             if( feachData.getUsername().equals( data.getUsername() ) ){
                 newUser=false;
 
@@ -49,18 +58,18 @@ public class DataHandler implements Serializable {
             }
         }
         if(newUser)
-            lData.add(data);
+            retData.add(data);
 
-        Collections.sort(lData, new Comparator<GameData>() {
+        Collections.sort(retData, new Comparator<GameData>() {
             public int compare(GameData o1, GameData o2) {
                 return o1.getScore().compareTo( o2.getScore() );
             }
         });
 
-        Integer lSize = lData.size();
+        Integer lSize = retData.size();
         if(lSize>5)
-            lData.subList(0,lSize-5).clear();
+            retData.subList(0,lSize-5).clear();
 
-        return lData;
+        return retData;
     }
 }

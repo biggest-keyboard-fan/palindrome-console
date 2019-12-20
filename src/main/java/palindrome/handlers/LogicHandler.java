@@ -5,8 +5,8 @@ import palindrome.handlers.*;
 
 import java.util.ArrayList;
 
-public class LogicHandler{
-    public Boolean isStringValid(ArrayList<Word> words, Word checkWord){ //TODO: Implement check for spaces, length, etc.
+public class LogicHandler{ //Completely static
+    public static Boolean isStringValid(ArrayList<Word> words, Word checkWord){ //TODO: Implement check for spaces, length, etc.
         Boolean ret = true;
         String checkString = checkWord.getWord();
 
@@ -17,7 +17,7 @@ public class LogicHandler{
         }
         return ret;
     }
-    public Word processWord(String word){
+    public static Word processWord(String word){
         String reverse = reverseWord(word);
         Integer score = getWordScore(word, reverse);
 
@@ -25,14 +25,14 @@ public class LogicHandler{
 
         return new Word(word,reverse,score);
     }
-    private String reverseWord(String word){
+    private static String reverseWord(String word){
         StringBuilder sBuilder = new StringBuilder().append(word);
         return sBuilder.reverse().toString();
     }
-    private Boolean checkPalindrome(String word, String reverse){
+    private static Boolean checkPalindrome(String word, String reverse){
         return word.equals(reverse);
     }
-    private Integer getWordScore(String word, String reverse){
+    private static Integer getWordScore(String word, String reverse){
         if(!checkPalindrome (word,reverse) ){ return 0; }
         else{ return word.length(); }
     }
