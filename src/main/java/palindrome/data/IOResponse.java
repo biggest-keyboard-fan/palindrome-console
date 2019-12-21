@@ -10,7 +10,7 @@ public class IOResponse {
     public String toString() {
         String ret = "Response type: "+response;
         if(responseData!=null)
-            ret+="Response data: "+responseData;
+            ret+=" Response data: {\n"+responseData+" }";
         return ret;
     }
 

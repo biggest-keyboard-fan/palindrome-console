@@ -16,6 +16,6 @@ public class IOData{
 
     @Override
     public String toString() {
-        return String.format("Input Word:\n%s\nCurrent Data:\n%s\nRead Data:\n%s\nSave Data:\n%s",inputWord,curData,readData,saveData);
+        return String.format("Input:\n%s\nSession data:\n%s\nRead data:\n%s\nSave data:\n%s",inputWord,curData,readData,saveData);
     }
 }

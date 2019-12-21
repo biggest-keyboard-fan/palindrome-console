@@ -45,7 +45,7 @@ public class DataHandler implements Serializable {
 
         return retData;
     }
-    public ArrayList<GameData> sortAscending(ArrayList<GameData> lData, GameData data){
+    private ArrayList<GameData> sortAscending(ArrayList<GameData> lData, GameData data){
         boolean newUser = true;
         ArrayList<GameData> retData = new ArrayList<>(lData);
 

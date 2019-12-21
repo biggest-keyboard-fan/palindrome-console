@@ -1,3 +1,5 @@
+package palindrome.main;
+
 import palindrome.data.*;
 import palindrome.handlers.*;
 
@@ -13,6 +15,7 @@ TODO:
 */
 
 public class MainPalindrome{
+  public static Boolean writeFilesToConsole = true;
   public static void main(String[] args) throws IOException, ClassNotFoundException {
 
     GameHandler gHandler = new GameHandler(); // - game mode

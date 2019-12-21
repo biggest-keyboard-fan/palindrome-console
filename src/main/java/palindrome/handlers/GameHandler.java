@@ -2,6 +2,7 @@ package palindrome.handlers;
 
 import palindrome.data.*;
 import palindrome.handlers.*;
+import palindrome.main.MainPalindrome;
 import sun.rmi.runtime.Log;
 
 import java.io.BufferedReader;
@@ -45,7 +46,8 @@ public class GameHandler{
     public void startReading() throws IOException, ClassNotFoundException {
         while(true){
             String line = readLine();
-            processLine(line);
+            IOResponse processL = processLine(line);
+            if(MainPalindrome.writeFilesToConsole) System.out.println( processL );
         }
     }
     public IOResponse processLine(String line) throws IOException, ClassNotFoundException{
@@ -56,7 +58,7 @@ public class GameHandler{
 
         if(isValid){
             allWords.add(word);
-            System.out.println( word.toString() );
+            if(!MainPalindrome.writeFilesToConsole) System.out.println( word.toString() );
             return new IOResponse( IOResponse.responseType.correct, dHandler.saveData() );
         }else{
             System.out.println( ProjectStrings.invalidWordMessage );
