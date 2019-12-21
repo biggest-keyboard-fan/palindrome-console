@@ -20,12 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 * */
 public class ScoreboardTest {
     @Test
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    void runTest() throws IOException, ClassNotFoundException, InterruptedException {
         File boardFile = new File(System.getProperty("user.dir")+"/"+ProjectStrings.filename);
-        boolean exists = boardFile.exists();
-        if(exists) try{  boardFile.delete(); } catch(Exception e){ e.printStackTrace(); }
-
-        System.out.println("Board file exists: "+exists);
+        try{ System.out.println("Exists: "+boardFile.exists()+" Deleted: "+ boardFile.delete() ); } catch(Exception e){ e.printStackTrace(); }
 
         GameHandler gHandler = new GameHandler("testUser");
 

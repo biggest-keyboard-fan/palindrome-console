@@ -19,6 +19,7 @@ public class GameHandler{
 
     private BufferedReader reader;
     private DataHandler dHandler;
+    public FileHandler getFileHandler(){ return this.dHandler.getFileHandler(); }
 
     private ArrayList<Word> allWords = new ArrayList<>();
     public ArrayList<Word> getWords(){ return this.allWords; }

@@ -1,5 +1,6 @@
 package palindrome;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import palindrome.data.IOResponse;
 import palindrome.handlers.GameHandler;
@@ -10,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class ResponseTest {
     @Test
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    @Tag("BasicTest")
+    void runTest() throws IOException, ClassNotFoundException {
         GameHandler gHandler = new GameHandler("testUser");
 
         assertSame( IOResponse.responseType.correct , gHandler.processLine("топот").getResponse() );

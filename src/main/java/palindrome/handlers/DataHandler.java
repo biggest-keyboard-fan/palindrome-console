@@ -1,20 +1,19 @@
 package palindrome.handlers;
 
 import palindrome.data.*;
-import palindrome.handlers.*;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 public class DataHandler implements Serializable {
     //Gives user score, record word, ?other features
     private String username;
     private GameHandler gHandler;
     private FileHandler fHandler;
+    public FileHandler getFileHandler(){return  this.fHandler; }
     public DataHandler(GameHandler gHandler) throws IOException {
         //Get gHandler username, dump correct answers to file
         this.fHandler = new FileHandler(ProjectStrings.filename);
@@ -30,11 +29,11 @@ public class DataHandler implements Serializable {
         }
         GameData gData = new GameData(this.username, totalScore);
 
-        ArrayList<GameData> gDataRet = fHandler.ReadFromFile();
+        ArrayList<GameData> gDataRet = fHandler.readFromFile();
         ArrayList<GameData> reinstDataRet = getReInstantiatedGameData(gDataRet); //Used for debugging. Contains separate instances
         ArrayList<GameData> gDataSort = sortAscending( gDataRet, gData );
 
-        fHandler.SaveToFile(gDataSort);
+        fHandler.saveToFile(gDataSort);
 
         return new IOData(lastWord,gData,reinstDataRet,gDataSort);
     }

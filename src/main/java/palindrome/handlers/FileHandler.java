@@ -1,30 +1,33 @@
 package palindrome.handlers;
 
 import palindrome.data.*;
-import palindrome.handlers.*;
 
 import java.io.*;
 import java.util.ArrayList;
 
 public class FileHandler {
     String fileName;
+    ObjectInputStream in=null;
+    public void closeInputStream() throws IOException { if(in!=null)in.close(); }
     public FileHandler(String fileName) throws IOException {
         this.fileName=fileName;
     }
-    public void SaveToFile(ArrayList<GameData> obj) throws IOException {
+    public void saveToFile(ArrayList<GameData> obj) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName) );
         out.writeObject(obj);
     }
-    public ArrayList<GameData> ReadFromFile() throws IOException, ClassNotFoundException {
-        ObjectInputStream in=null;
+    public ArrayList<GameData> readFromFile() throws IOException, ClassNotFoundException {
+        in=null;
         try{
             in = new ObjectInputStream(new FileInputStream(fileName) );
         }
         catch(FileNotFoundException e){
             ArrayList<GameData> empty = new ArrayList<GameData>();
-            SaveToFile( empty );
+            saveToFile( empty );
             return empty;
         }
-        return (ArrayList<GameData>) in.readObject();
+
+        ArrayList<GameData> gameData = (ArrayList<GameData>) in.readObject();
+        return gameData;
     }
 }

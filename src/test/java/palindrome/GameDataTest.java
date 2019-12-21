@@ -1,4 +1,5 @@
 package palindrome;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import palindrome.data.GameData;
 import palindrome.handlers.GameHandler;
@@ -10,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class GameDataTest {
     @Test
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    @Tag("BasicTest")
+    void runTest() throws IOException, ClassNotFoundException {
         GameHandler gHandler = new GameHandler("testUser");
 
         assertEquals( new GameData(gHandler.getUsername(),5).toString() , gHandler.processLine("топот").getIOData().getCurData().toString() );
