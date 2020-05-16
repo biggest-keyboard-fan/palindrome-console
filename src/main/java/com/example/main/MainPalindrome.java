@@ -11,7 +11,8 @@ TODO:
  - Look for other ways of cheating
  - FileHandler debugging
  - Reformat classes
- - Override equals() for IOData, GameData, Word classes
+ - CompareTo() for IOData, GameData, Word classes
+ - Create notPalindrome, correct, used word classes w/ word interface
 */
 
 public class MainPalindrome{
